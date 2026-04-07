@@ -2,6 +2,7 @@ package proyecto.grupo1.poc_springboot.controllers;
 
 import java.util.List;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,6 +18,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.annotation.security.PermitAll;
 import lombok.RequiredArgsConstructor;
 import proyecto.grupo1.poc_springboot.datatypes.UserCreateDTO;
 import proyecto.grupo1.poc_springboot.datatypes.UserDTO;
@@ -31,6 +33,7 @@ public class UserController {
 	private final UserService userService;
 
 	@GetMapping
+	@PermitAll
 	@Operation(
 		summary = "Listar usuarios",
 		description = "Devuelve una lista de todos los usuarios registrados.")
@@ -45,6 +48,7 @@ public class UserController {
 	}
 
 	@GetMapping("/{nickname}")
+	@PermitAll
 	@Operation(summary = "Obtener usuario por nickname", description = "Devuelve los detalles de un usuario específico dado su nickname.")
 	@ApiResponses({
 		@ApiResponse(
@@ -64,6 +68,7 @@ public class UserController {
 	}
 
 	@PostMapping
+	@PermitAll
 	@Operation(summary = "Crear usuario", description = "Crea un nuevo usuario con los datos proporcionados.")
 	@ApiResponses({
 		@ApiResponse(
@@ -82,6 +87,7 @@ public class UserController {
 	}
 
 	@PutMapping("/{nickname}")
+	@PreAuthorize("hasRole('admin')")
 	@Operation(summary = "Actualizar usuario", description = "Actualiza los datos de un usuario existente dado su nickname.")
 	@ApiResponses({
 		@ApiResponse(

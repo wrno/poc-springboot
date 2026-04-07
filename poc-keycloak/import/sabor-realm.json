@@ -1,6 +1,6 @@
 {
   "id": "208c1d69-bc27-4c86-af91-18e23e983438",
-  "realm": "sabor-realm",
+  "realm": "sabor",
   "notBefore": 0,
   "defaultSignatureAlgorithm": "RS256",
   "revokeRefreshToken": false,
@@ -49,7 +49,7 @@
     "realm": [
       {
         "id": "e66d44ad-c00e-4bf8-ba21-7c8b85145ed1",
-        "name": "default-roles-sabor-realm",
+        "name": "default-roles-sabor",
         "description": "${role_default-roles}",
         "composite": true,
         "composites": {
@@ -435,7 +435,7 @@
   "groups": [],
   "defaultRole": {
     "id": "e66d44ad-c00e-4bf8-ba21-7c8b85145ed1",
-    "name": "default-roles-sabor-realm",
+    "name": "default-roles-sabor",
     "description": "${role_default-roles}",
     "composite": true,
     "clientRole": false,
@@ -510,13 +510,13 @@
       "clientId": "account",
       "name": "${client_account}",
       "rootUrl": "${authBaseUrl}",
-      "baseUrl": "/realms/sabor-realm/account/",
+      "baseUrl": "/realms/sabor/account/",
       "surrogateAuthRequired": false,
       "enabled": true,
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
       "redirectUris": [
-        "/realms/sabor-realm/account/*"
+        "/realms/sabor/account/*"
       ],
       "webOrigins": [],
       "notBefore": 0,
@@ -557,13 +557,13 @@
       "clientId": "account-console",
       "name": "${client_account-console}",
       "rootUrl": "${authBaseUrl}",
-      "baseUrl": "/realms/sabor-realm/account/",
+      "baseUrl": "/realms/sabor/account/",
       "surrogateAuthRequired": false,
       "enabled": true,
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
       "redirectUris": [
-        "/realms/sabor-realm/account/*"
+        "/realms/sabor/account/*"
       ],
       "webOrigins": [],
       "notBefore": 0,
@@ -821,13 +821,13 @@
       "clientId": "security-admin-console",
       "name": "${client_security-admin-console}",
       "rootUrl": "${authAdminUrl}",
-      "baseUrl": "/admin/sabor-realm/console/",
+      "baseUrl": "/admin/sabor/console/",
       "surrogateAuthRequired": false,
       "enabled": true,
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
       "redirectUris": [
-        "/admin/sabor-realm/console/*"
+        "/admin/sabor/console/*"
       ],
       "webOrigins": [
         "+"
