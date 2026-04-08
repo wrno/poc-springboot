@@ -1,6 +1,12 @@
-.env*
-/poc-pgsql
 /.vscode
+
+# Ignorar archivos de entorno, excepto el ejemplo
+.env*
+!.env.example
+
+# Ignorar archivos de PostgreSQL, excepto el script de inicialización
+/poc-pgsql/*
+!/poc-pgsql/init
 
 # Ignorar archivos de Keycloak, excepto la carpeta de importación
 /poc-keycloak/*

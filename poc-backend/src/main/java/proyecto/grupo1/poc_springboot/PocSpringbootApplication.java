@@ -38,7 +38,7 @@ public class PocSpringbootApplication {
 		return new WebMvcConfigurer() {
 			@Override
 			public void addCorsMappings(CorsRegistry registry) {
-				String allowedOrigins = env.getProperty("app.cors.allowed-origins");
+				String allowedOrigins = env.getProperty("CORS_ALLOWED_ORIGINS");
 				registry.addMapping("/**").allowedOrigins(allowedOrigins.split(","));
 			}
 		};

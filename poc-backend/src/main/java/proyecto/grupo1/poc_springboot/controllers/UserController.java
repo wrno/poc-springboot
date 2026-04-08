@@ -20,6 +20,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.security.PermitAll;
 import lombok.RequiredArgsConstructor;
+import proyecto.grupo1.poc_springboot.datatypes.ErrorMessage;
 import proyecto.grupo1.poc_springboot.datatypes.UserCreateDTO;
 import proyecto.grupo1.poc_springboot.datatypes.UserDTO;
 import proyecto.grupo1.poc_springboot.datatypes.UserUpdateDTO;
@@ -60,7 +61,9 @@ public class UserController {
 		@ApiResponse(
 			responseCode = "400",
 			description = "El usuario no existe.",
-			content = @Content(mediaType = "text/plain"))
+			content = @Content(
+				mediaType = "application/json",
+				schema = @Schema(implementation = ErrorMessage.class))),
 	})
 	public UserDTO getUserByNickname(@PathVariable(name = "nickname") String nickname) {
 		UserDTO user = userService.getUserByNickname(nickname);
@@ -80,7 +83,9 @@ public class UserController {
 		@ApiResponse(
 			responseCode = "500",
 			description = "Error interno del servidor.",
-			content = @Content(mediaType = "text/plain"))
+			content = @Content(
+				mediaType = "application/json",
+				schema = @Schema(implementation = ErrorMessage.class)))
 	})
 	public UserDTO createUser(@RequestBody UserCreateDTO user) {
 		return userService.createUser(user);
@@ -99,11 +104,15 @@ public class UserController {
 		@ApiResponse(
 			responseCode = "400",
 			description = "El usuario no existe.",
-			content = @Content(mediaType = "text/plain")),
+			content = @Content(
+				mediaType = "application/json",
+				schema = @Schema(implementation = ErrorMessage.class))),
 		@ApiResponse(
 			responseCode = "500",
 			description = "Error interno del servidor.",
-			content = @Content(mediaType = "text/plain"))
+			content = @Content(
+				mediaType = "application/json",
+				schema = @Schema(implementation = ErrorMessage.class)))
 	})
 	public UserDTO updateUser(@PathVariable(name = "nickname") String nickname, @RequestBody UserUpdateDTO user) {
 		return userService.updateUser(nickname, user);
@@ -119,11 +128,15 @@ public class UserController {
 		@ApiResponse(
 			responseCode = "400",
 			description = "El usuario no existe.",
-			content = @Content(mediaType = "text/plain")),
+			content = @Content(
+				mediaType = "application/json",
+				schema = @Schema(implementation = ErrorMessage.class))),
 		@ApiResponse(
 			responseCode = "500",
 			description = "Error interno del servidor.",
-			content = @Content(mediaType = "text/plain"))
+			content = @Content(
+				mediaType = "application/json",
+				schema = @Schema(implementation = ErrorMessage.class)))
 	})
 	public void deleteUser(@PathVariable(name = "nickname") String nickname) {
 		userService.deleteUser(nickname);
