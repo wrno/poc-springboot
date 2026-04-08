@@ -1,21 +1,22 @@
 services:
   poc-pgsql:
     container_name: poc-pgsql
-    image: postgres:latest
+    build: ./poc-pgsql
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_MULTIPLE_DATABASES: ${POSTGRES_DB},keycloak
+      POSTGRES_MULTIPLE_DATABASES: ${POSTGRES_DB}:${POSTGRES_DB_PASSWORD},keycloak:${KEYCLOAK_ADMIN_PASSWORD}
     ports:
       - "5432:5432"
     healthcheck:
-      test: ["CMD", "pg_isready", "-U", "${POSTGRES_USER}"]
+      test: ["CMD-SHELL",
+        "PGPASSWORD=${POSTGRES_DB_PASSWORD} psql -U ${POSTGRES_DB} -d ${POSTGRES_DB} -c \"SELECT 1\"", "&&",
+        "PGPASSWORD=${KEYCLOAK_ADMIN_PASSWORD} psql -U keycloak -d keycloak -c \"SELECT 1\""]
       interval: 10s
       timeout: 5s
       retries: 5
     volumes:
       - ./poc-pgsql/data:/var/lib/postgresql
-      - ./poc-pgsql/init:/docker-entrypoint-initdb.d
   poc-keycloak:
     container_name: poc-keycloak
     image: quay.io/keycloak/keycloak:latest
@@ -40,8 +41,8 @@ services:
 
       KC_DB: postgres
       KC_DB_URL: jdbc:postgresql://poc-pgsql:5432/keycloak
-      KC_DB_USERNAME: ${POSTGRES_USER}
-      KC_DB_PASSWORD: ${POSTGRES_PASSWORD}
+      KC_DB_USERNAME: keycloak
+      KC_DB_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
     depends_on:
       poc-pgsql:
         condition: service_healthy
@@ -70,8 +71,8 @@ services:
     environment:
       SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE}
       SPRING_DATASOURCE_URL: jdbc:postgresql://poc-pgsql:5432/${POSTGRES_DB}
-      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
-      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_DB}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_DB_PASSWORD}
       SECURITY_USER_NAME: ${SECURITY_USER_NAME}
       SECURITY_USER_PASSWORD: ${SECURITY_USER_PASSWORD}
       SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: ${SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI}
