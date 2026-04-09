@@ -1,7 +1,6 @@
 package proyecto.grupo1.poc_springboot.controllers;
 
 import java.util.Collections;
-import java.util.Hashtable;
 import java.util.Map;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

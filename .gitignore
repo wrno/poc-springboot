@@ -12,3 +12,6 @@
 # Ignorar archivos de Keycloak, excepto la carpeta de importación
 /poc-keycloak/*
 !/poc-keycloak/import
+
+# Ignorar override de Compose
+compose.override.yaml

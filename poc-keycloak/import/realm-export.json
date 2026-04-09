@@ -1,6 +1,6 @@
 {
   "id": "208c1d69-bc27-4c86-af91-18e23e983438",
-  "realm": "sabor",
+  "realm": "${KEYCLOAK_REALM}",
   "notBefore": 0,
   "defaultSignatureAlgorithm": "RS256",
   "revokeRefreshToken": false,
@@ -49,7 +49,7 @@
     "realm": [
       {
         "id": "e66d44ad-c00e-4bf8-ba21-7c8b85145ed1",
-        "name": "default-roles-sabor",
+        "name": "default-roles-${KEYCLOAK_REALM}",
         "description": "${role_default-roles}",
         "composite": true,
         "composites": {
@@ -341,7 +341,7 @@
           "attributes": {}
         }
       ],
-      "sabor-confidential": [],
+      "${KEYCLOAK_CLIENT_ID}": [],
       "account": [
         {
           "id": "4b635813-b15c-4eb7-9f20-1e03a13d4972",
@@ -435,7 +435,7 @@
   "groups": [],
   "defaultRole": {
     "id": "e66d44ad-c00e-4bf8-ba21-7c8b85145ed1",
-    "name": "default-roles-sabor",
+    "name": "default-roles-${KEYCLOAK_REALM}",
     "description": "${role_default-roles}",
     "composite": true,
     "clientRole": false,
@@ -510,13 +510,13 @@
       "clientId": "account",
       "name": "${client_account}",
       "rootUrl": "${authBaseUrl}",
-      "baseUrl": "/realms/sabor/account/",
+      "baseUrl": "/realms/${KEYCLOAK_REALM}/account/",
       "surrogateAuthRequired": false,
       "enabled": true,
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
       "redirectUris": [
-        "/realms/sabor/account/*"
+        "/realms/${KEYCLOAK_REALM}/account/*"
       ],
       "webOrigins": [],
       "notBefore": 0,
@@ -557,13 +557,13 @@
       "clientId": "account-console",
       "name": "${client_account-console}",
       "rootUrl": "${authBaseUrl}",
-      "baseUrl": "/realms/sabor/account/",
+      "baseUrl": "/realms/${KEYCLOAK_REALM}/account/",
       "surrogateAuthRequired": false,
       "enabled": true,
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
       "redirectUris": [
-        "/realms/sabor/account/*"
+        "/realms/${KEYCLOAK_REALM}/account/*"
       ],
       "webOrigins": [],
       "notBefore": 0,
@@ -742,21 +742,19 @@
     },
     {
       "id": "105bca0c-a15a-41ee-a6d2-a8a6b9f47bef",
-      "clientId": "sabor-confidential",
-      "name": "",
-      "description": "",
-      "rootUrl": "http://localhost:8081",
-      "adminUrl": "http://localhost:8081",
-      "baseUrl": "http://localhost:8081/",
+      "clientId": "${KEYCLOAK_CLIENT_ID}",
+      "name": "Cliente ${KEYCLOAK_REALM}",
+      "description": "Cliente para el frontend del sistema ${KEYCLOAK_REALM}",
+      "rootUrl": "${KEYCLOAK_URL_ROOT}",
+      "adminUrl": "${KEYCLOAK_URL_ADMIN}",
+      "baseUrl": "${KEYCLOAK_URL_BASE}",
       "surrogateAuthRequired": false,
       "enabled": true,
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
-      "secret": "**********",
+      "secret": "${KEYCLOAK_CLIENT_SECRET}",
       "redirectUris": [
-        "https://oauth.pstmn.io/v1/browser-callback",
-        "http://localhost:8081/login/oauth2/code/sabor-confidential",
-        "https://oauth.pstmn.io/v1/callback"
+        "${KEYCLOAK_URL_REDIRECT}"
       ],
       "webOrigins": [
         "+"
@@ -776,7 +774,7 @@
         "client.secret.creation.time": "1775694478",
         "standard.token.exchange.enabled": "false",
         "frontchannel.logout.session.required": "true",
-        "post.logout.redirect.uris": "http://localhost:8081/",
+        "post.logout.redirect.uris": "${KEYCLOAK_URL_REDIRECT_LOGOUT}",
         "oauth2.device.authorization.grant.enabled": "false",
         "use.jwks.url": "false",
         "backchannel.logout.revoke.offline.tokens": "false",
@@ -830,13 +828,13 @@
       "clientId": "security-admin-console",
       "name": "${client_security-admin-console}",
       "rootUrl": "${authAdminUrl}",
-      "baseUrl": "/admin/sabor/console/",
+      "baseUrl": "/admin/${KEYCLOAK_REALM}/console/",
       "surrogateAuthRequired": false,
       "enabled": true,
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
       "redirectUris": [
-        "/admin/sabor/console/*"
+        "/admin/${KEYCLOAK_REALM}/console/*"
       ],
       "webOrigins": [
         "+"
@@ -2668,5 +2666,22 @@
   },
   "clientPolicies": {
     "policies": []
-  }
+  },
+  "users": [
+    {
+      "username": "${SYSTEM_ADMIN_USERNAME}",
+      "enabled": "true",
+      "email": "${SYSTEM_ADMIN_EMAIL}",
+      "firstName": "${SYSTEM_ADMIN_FIRSTNAME}",
+      "lastName": "${SYSTEM_ADMIN_LASTNAME}",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "${SYSTEM_ADMIN_PASSWORD}",
+          "temporary": "false"
+        }
+      ],
+      "realmRoles": ["admin", "default-roles-${KEYCLOAK_REALM}"]
+    }
+  ]
 }

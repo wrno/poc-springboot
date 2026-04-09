@@ -5,13 +5,11 @@ services:
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_MULTIPLE_DATABASES: ${POSTGRES_DB}:${POSTGRES_DB_PASSWORD},keycloak:${KEYCLOAK_ADMIN_PASSWORD}
-    ports:
-      - "5432:5432"
+      POSTGRES_MULTIPLE_DATABASES: ${POSTGRES_DB}:${POSTGRES_DB_USER}:${POSTGRES_DB_PASSWORD};keycloak:${KEYCLOAK_ADMIN_USER}:${KEYCLOAK_ADMIN_PASSWORD}
     healthcheck:
       test: ["CMD-SHELL",
-        "PGPASSWORD=${POSTGRES_DB_PASSWORD} psql -U ${POSTGRES_DB} -d ${POSTGRES_DB} -c \"SELECT 1\"", "&&",
-        "PGPASSWORD=${KEYCLOAK_ADMIN_PASSWORD} psql -U keycloak -d keycloak -c \"SELECT 1\""]
+        "PGPASSWORD=${POSTGRES_DB_PASSWORD} psql -U ${POSTGRES_DB_USER} -d ${POSTGRES_DB} -c \"SELECT 1\"", "&&",
+        "PGPASSWORD=${KEYCLOAK_ADMIN_PASSWORD} psql -U ${KEYCLOAK_ADMIN_USER} -d keycloak -c \"SELECT 1\""]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -20,19 +18,16 @@ services:
   poc-keycloak:
     container_name: poc-keycloak
     image: quay.io/keycloak/keycloak:latest
-    command:
-      - start-dev
-      - --import-realm
-    ports:
-      - 8080:8080
+    command: ${KEYCLOAK_START_CMD}
     volumes:
       - ./poc-keycloak/:/opt/keycloak/data
     environment:
       KC_BOOTSTRAP_ADMIN_USERNAME: ${KEYCLOAK_ADMIN_USER}
       KC_BOOTSTRAP_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
-      KC_HTTP_PORT: 8080
-      KC_HOSTNAME: http://keycloak.local:8080
-      KC_HOSTNAME_ADMIN: http://keycloak.local:8080
+
+      KC_HOSTNAME: ${KEYCLOAK_HOSTNAME}
+      KC_HOSTNAME_ADMIN: ${KEYCLOAK_HOSTNAME_ADMIN}
+
       KC_HTTP_RELATIVE_PATH: /
       KC_HTTP_ENABLED: true
 
@@ -41,8 +36,24 @@ services:
 
       KC_DB: postgres
       KC_DB_URL: jdbc:postgresql://poc-pgsql:5432/keycloak
-      KC_DB_USERNAME: keycloak
+      KC_DB_USERNAME: ${KEYCLOAK_ADMIN_PASSWORD}
       KC_DB_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
+
+      KEYCLOAK_REALM: ${KEYCLOAK_REALM}
+      KEYCLOAK_CLIENT_ID: ${KEYCLOAK_CLIENT_ID}
+      KEYCLOAK_CLIENT_SECRET: ${KEYCLOAK_CLIENT_SECRET}
+
+      KEYCLOAK_URL_ROOT: ${KEYCLOAK_URL_ROOT}
+      KEYCLOAK_URL_REDIRECT: ${KEYCLOAK_URL_REDIRECT}
+      KEYCLOAK_URL_REDIRECT_LOGOUT: ${KEYCLOAK_URL_REDIRECT_LOGOUT}
+      KEYCLOAK_URL_ADMIN: ${KEYCLOAK_URL_ADMIN}
+      KEYCLOAK_URL_BASE: ${KEYCLOAK_URL_BASE}
+      
+      SYSTEM_ADMIN_USERNAME: ${SYSTEM_ADMIN_USERNAME}
+      SYSTEM_ADMIN_EMAIL: ${SYSTEM_ADMIN_EMAIL}
+      SYSTEM_ADMIN_FIRSTNAME: ${SYSTEM_ADMIN_FIRSTNAME}
+      SYSTEM_ADMIN_LASTNAME: ${SYSTEM_ADMIN_LASTNAME}
+      SYSTEM_ADMIN_PASSWORD: ${SYSTEM_ADMIN_PASSWORD}
     depends_on:
       poc-pgsql:
         condition: service_healthy
@@ -66,25 +77,22 @@ services:
   poc-backend:
     container_name: poc-backend
     build: ./poc-backend
-    ports:
-      - "8081:8080"
     environment:
       SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE}
+
       SPRING_DATASOURCE_URL: jdbc:postgresql://poc-pgsql:5432/${POSTGRES_DB}
-      SPRING_DATASOURCE_USERNAME: ${POSTGRES_DB}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_DB_USER}
       SPRING_DATASOURCE_PASSWORD: ${POSTGRES_DB_PASSWORD}
+
       SECURITY_USER_NAME: ${SECURITY_USER_NAME}
       SECURITY_USER_PASSWORD: ${SECURITY_USER_PASSWORD}
-      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: ${SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI}
-      KEYCLOAK_CLIENT_ID: ${KEYCLOAK_CLIENT_ID}
-      KEYCLOAK_REDIRECT_URI: ${KEYCLOAK_REDIRECT_URI}
+
+      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: ${KEYCLOAK_HOSTNAME}/realms/${KEYCLOAK_REALM}
     depends_on:
       poc-pgsql:
         condition: service_healthy
       poc-keycloak:
         condition: service_healthy
-    extra_hosts:
-      - "keycloak.local:host-gateway"
     develop:
       watch:
         - action: rebuild
