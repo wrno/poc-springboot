@@ -2,7 +2,7 @@ package proyecto.grupo1.poc_springboot.configuration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import static org.springframework.security.config.Customizer.withDefaults;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -26,7 +26,8 @@ public class SecurityConfig {
 					"/swagger-ui.html"
 				).permitAll()
 				.anyRequest().authenticated()
-			).oauth2Login(withDefaults());
+			).csrf(csrf -> csrf.disable())
+			.oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
 
 		return http.build();
 	}
